@@ -1,0 +1,52 @@
+
+# Default config for MammoCRKAN
+seed: 42
+
+# Data
+image_size: [2944, 1920]   # (H, W), resize target
+channels: 1                # grayscale
+num_classes: 3             # 2 or 3
+right_orient: true         # horizontally flip left breasts to right-orient
+
+# Training
+batch_size: 8
+epochs: 80
+early_stop_patience: 12
+optimizer:
+  name: adamw
+  lr: 1.0e-4
+  weight_decay: 1.0e-4
+scheduler:
+  name: cosine
+  min_lr: 1.0e-8
+  warmup_epochs: 5
+
+# Backbones
+backbone1: resnet50        # for SSM path (direct effect)
+backbone2: resnet18        # for KAAM path (patch aggregator)
+
+# SSM
+ssm:
+  offset_channels: 64
+  offset_scale: 0.10
+
+# KAAM (MCP + KAN)
+kaam:
+  patch_size: [512, 512]
+  num_patches: 6
+  cover_rate: 0.3         # r in the paper
+  temperature: 0.5        # tau in softmax
+  kan:
+    degree: 3             # cubic B-spline
+    num_bases: 10         # per-channel basis functions
+    init_range: [-2.0, 2.0]
+
+# Loss
+focal_loss:
+  alpha: 0.25
+  gamma: 2.0
+
+# Logging / Checkpoint
+log_every: 25
+val_every: 1
+save_every: 1
